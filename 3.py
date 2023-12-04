@@ -43,11 +43,13 @@ def find_num(data, x, y):
     for j in range(y, len(data[0])):
         if data[x][j].isdigit():
             num += data[x][j]
-        else: break
+        else:
+            break
     for j in range(y - 1, -1, -1):
         if data[x][j].isdigit():
             num = data[x][j] + num
-        else: break
+        else:
+            break
     return num
 
 
