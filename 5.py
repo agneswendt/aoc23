@@ -50,15 +50,6 @@ def p1(data):
     return min(seeds)
 
 
-def calc_location(rules, order, seed):
-    for ruleset in order:
-        for rule in rules[ruleset]:
-            if rule[1] <= seed < rule[2] + rule[1]:
-                seed = seed + (rule[0] - rule[1])
-                break
-    return seed
-
-
 def get_min(rules, order, span):
     spans = [span]
     for rule_set in order:
