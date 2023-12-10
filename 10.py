@@ -92,13 +92,6 @@ def check_dir(coords, data, visited, step):
     return res
 
 
-def is_enclosed(coords, data, visited):
-    for dir in ((0, 1), (1, 0), (0, -1), (-1, 0)):
-        if check_dir(coords, data, visited, dir) % 2 == 0:
-            return False
-    return True
-
-
 def p2(data):
     for y, line in enumerate(data):
         for x, c in enumerate(line):
@@ -113,8 +106,7 @@ def p2(data):
     for y, line in enumerate(data):
         for x, c in enumerate(line):
             if (x, y) not in visited:
-                if is_enclosed((x, y), data, visited):
-                    res += 1
+                res += check_dir((x, y), data, visited, (0, 1)) % 2
     return res
 
 
