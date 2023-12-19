@@ -18,26 +18,17 @@ def get_input():
             used = True
             continue
         if used:
-            x, m, a, s = [int(i.split("=")[1]) for i in line[1:-1].split(",")]
-            r = (x, m, a, s)
-            ratings.append(r)
+            ratings.append([int(i.split("=")[1]) for i in line[1:-1].split(",")])
         else:
             name = line.split("{")[0]
             rules = line.split("{")[1][:-1].split(",")
             res = []
             for rule in rules:
-                if "<" in rule:
-                    a, b, c = (rule.split("<")[0], "<", rule.split("<")[1])
-                    c, d = c.split(":")
-                    r = "".join((a, b, c)), d
-                elif ">" in rule:
-                    a, b, c = (rule.split(">")[0], ">", rule.split(">")[1])
-                    c, d = c.split(":")
-                    r = "".join((a, b, c)), d
+                if "<" in rule or ">" in rule:
+                    r = tuple(rule.split(":"))
                 else:
                     r = rule
                 res.append(r)
-
             workflows[name] = res
     return (workflows, ratings)
 
@@ -85,23 +76,21 @@ def calc(workflows, vars, curr="in", r1=1, r2=4001):
                 l, u = vars[i]
                 vars[i] = (l, min(u, num))
                 res += calc(workflows, vars.copy(), curr=dest)
-                vars[i] = (num, min(u, r2))
+                vars[i] = (num, min(u, 4001))
             elif ">" in rule:
                 num = int(rule.split(">")[1]) + 1
                 i = "xmas".index(rule[0])
                 l, u = vars[i]
                 vars[i] = (max(l, num), u)
                 res += calc(workflows, vars.copy(), curr=dest)
-                vars[i] = (max(r1, l), num)
+                vars[i] = (max(1, l), num)
         else:
             res += calc(workflows, vars, curr=rule)
     return res
 
 
 def p2(data):
-    workflows, _ = data
-    r1, r2 = 1, 4001
-    return calc(workflows, [(r1, r2)] * 4, r1=r1, r2=r2)
+    return calc(data[0], [(1, 4001)] * 4)
 
 
 if __name__ == "__main__":
