@@ -67,7 +67,7 @@ def p1(data):
     return res
 
 
-def calc(workflows, vars, curr="in"):
+def calc(workflows, vars, curr="in", r1=1, r2=4001):
     if curr == "A":
         res = 1
         for x1, x2 in vars:
@@ -78,20 +78,21 @@ def calc(workflows, vars, curr="in"):
     res = 0
     for rule in workflows[curr]:
         if isinstance(rule, tuple) and (">" or "<" in rule[0]):
-            if "<" in rule[0]:
-                num = int(rule[0].split("<")[1])
-                i = "xmas".index(rule[0][0])
+            rule, dest = rule
+            if "<" in rule:
+                num = int(rule.split("<")[1])
+                i = "xmas".index(rule[0])
                 l, u = vars[i]
                 vars[i] = (l, min(u, num))
-                res += calc(workflows, vars.copy(), curr=rule[1])
-                vars[i] = (num, min(u, 4001))
-            elif ">" in rule[0]:
-                num = int(rule[0].split(">")[1]) + 1
-                i = "xmas".index(rule[0][0])
+                res += calc(workflows, vars.copy(), curr=dest)
+                vars[i] = (num, min(u, r2))
+            elif ">" in rule:
+                num = int(rule.split(">")[1]) + 1
+                i = "xmas".index(rule[0])
                 l, u = vars[i]
                 vars[i] = (max(l, num), u)
-                res += calc(workflows, vars.copy(), curr=rule[1])
-                vars[i] = (max(1, l), num)
+                res += calc(workflows, vars.copy(), curr=dest)
+                vars[i] = (max(r1, l), num)
         else:
             res += calc(workflows, vars, curr=rule)
     return res
@@ -99,7 +100,8 @@ def calc(workflows, vars, curr="in"):
 
 def p2(data):
     workflows, _ = data
-    return calc(workflows, [(1, 4001)] * 4)
+    r1, r2 = 1, 4001
+    return calc(workflows, [(r1, r2)] * 4, r1=r1, r2=r2)
 
 
 if __name__ == "__main__":
